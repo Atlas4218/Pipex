@@ -1,0 +1,143 @@
+
+on creer ac - 4 pipes (-3 pour le programme path, le nom du fichier d'entree, le nom du fichier de sortie)
+
+pipe(piped)
+
+pipee = 0
+infile = 0 (ou fd)
+
+boucle (ac - 1)
+	if(pipe[])
+		infile = pipe[0]
+		close(pipe[1])
+	if (pipe(pipe))
+
+	fork
+	child
+		close(pipe[0])
+		exceve
+			lire sur infile (dup2(infile, stdin))
+			execution
+			ecrire sur pipe[1] (dup2(pipe[1], stdout))
+		exit
+	wait(NULL);
+endboucle
+
+
+en recursif
+
+funct(char **av, char **env, int nb, int IO[2])
+{
+	int pip[2]
+	t_pid pid
+	char **cmd
+	char *exe;
+
+	cmd = ft_split(*av, ' ')
+	if (pipe(pip))
+		return (tabclear(cmd));
+	if (!nb)
+		dup2(IO[1], pip[1])
+	exe = get_path(env, cmd[0])
+	pid = fork
+	if (!pid) //child
+	{
+		dup2(IO[0], stdin)
+		dup2(pip[1], stdout)
+		close(pip[0])
+		excec(exe, cmd, env)
+	}
+	dup2(IO[1], pip[1])
+	if (nb && *(++av) && pid != -1)
+		funct(av, env, nb - 1, pip)
+	close(pip[1])
+	close(pip[0])
+	tabclear(cmd)
+	free(exe)
+	if (pid < -1)
+		waitpid(pid)
+}
+
+
+funct(char **av, char **env, int nb, int IO[2])
+{
+	int pip[2]
+	t_pid pid
+	char **cmd
+	char *exe;
+
+	if (pipe(pip))
+		return ;
+	cmd = ft_split(*av, ' ')
+	exe = get_path(env, cmd)
+	if (!nb)
+		dup2(IO[1], pip[1])
+	pid = fork()
+	if (pid == -1)
+		return ;
+	if (!pid)
+	{
+		dup2(IO[0], stdin)
+		dup2(pip[1], stdout)
+		exceve(exe, cmd, env)
+	}
+	if (nb)
+		funct(av, env, nb - 1, pip)
+	waitpid(pid)
+	free(exe)
+	tabclear(cmd)
+}
+
+get_path(char **env, char *cmd)
+{
+	char	**listpath
+	char	*dpath
+	char	*fpath
+	char	**temp;
+
+	while (*env && ft_strncmp(*env), "PATH=", 5)
+		env++
+	if (!*env)
+		return (NULL);
+	listpath = ft_split((*env) + 5, ':')
+	temp = listpath
+	while (*listpath)
+	{
+		dpath = ft_strjoin(*listpath, "/")
+		fpath = ft_strjoin(path, cmd)
+		free(dpath)
+		if (!access(path))
+			break ;
+		free(fpath)
+		free(*listpath)
+		listpath++
+	}
+	while (*listpath)
+		free(*listpath++)
+	return (free(temp), fpath);
+}
+
+
+
+123
+
+
+[===]
+
+[===]  [===]
+{===]  [123}
+[123]  [123}
+
+[123]
+
+
+infile = {123]
+[~~~]
+
+
+[~~~]   {123]-> [~~~]
+[~~~]   [456}
+[456]	[456}
+
+
+
