@@ -1,0 +1,7 @@
+premiere commande
+
+
+
+execution
+stockage du resultat dans le pipe (dup2(pipe[1], stdout)
+renvois du pipe
