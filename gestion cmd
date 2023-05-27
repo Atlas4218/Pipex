@@ -31,30 +31,49 @@ int funct(char **av, char **env, int nb, int infile)
 	int pip[2]
 	t_pid pid
 	char **cmd
-	char *exe;
 
-	cmd = ft_split(*av, ' ')
 	if (pipe(pip))
-		return (tabclear(cmd), -1);
-	exe = get_path(env, cmd[0])
+		return (perror(pipe), -1);
+	cmd = create_cmd(*av, env);
 	pid = fork
+	if (pid == -1)
+		return (tabclear(cmd), -1)
 	if (!pid) //child
 	{
-		dup2(pip[1], stdout)
-		close(pip[0])
-		excec(exe, cmd, env)
+		close(pip[1])
+		routine_child(infile, pip[0], cmd, env)
 	}
 	dup2(infile, stdin)
-	if (nb && *(++av) && pid != -1)
-		return (funct(av, env, nb - 1, pip[0]));
 	close(pip[1])
-	close(pip[0])
-	tabclear(cmd)
-	free(exe)
 	if (pid > 0)
 		waitpid(pid)
+	if (nb && *(++av) && pid != -1)
+		return (tabclear(cmd), funct(av, env, nb - 1, pip[0]));
+	if (!nb)
+		return (tabclear(cmd), pid[0])
+	close(pip[0])
+	return (tabclear(cmd), -1)
 }
 
+/*** Routine enfant
+av doit etre construit avant
+*argv = "ls -f"
+cmd = ft_split(av)
+exe = getpath(cmd[0], env
+free(cmd[0])
+cmd[0] = strdup(exe) //cmd = {/bin/ls, -f}
+free(exe) ***/
+
+routine_child(int fdin, int fdout, char **cmd, char **env)
+{
+	dup2(fdin, stdin)
+	dup2(fdout, stdout)
+	excve(cmd[0], cmd, env)
+	perror()
+	exit(FAILURE)
+}
+
+cmd doit etre creer avant le fork (pour pouvoir le free apres)
 
 get_path(char **env, char *cmd)
 {
@@ -84,28 +103,6 @@ get_path(char **env, char *cmd)
 		free(*listpath++)
 	return (free(temp), fpath);
 }
-
-
-
-123
-
-
-[===]
-
-[===]  [===]
-{===]  [123}
-[123]  [123}
-
-[123]
-
-
-infile = {123]
-[~~~]
-
-
-[~~~]   {123]-> [~~~]
-[~~~]   [456}
-[456]	[456}
 
 
 
