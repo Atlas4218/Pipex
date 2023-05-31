@@ -1,79 +1,15 @@
 
-on creer ac - 4 pipes (-3 pour le programme path, le nom du fichier d'entree, le nom du fichier de sortie)
-
-pipe(piped)
-
-pipee = 0
-infile = 0 (ou fd)
-
-boucle (ac - 1)
-	if(pipe[])
-		infile = pipe[0]
-		close(pipe[1])
-	if (pipe(pipe))
-
-	fork
-	child
-		close(pipe[0])
-		exceve
-			lire sur infile (dup2(infile, stdin))
-			execution
-			ecrire sur pipe[1] (dup2(pipe[1], stdout))
-		exit
-	wait(NULL);
-endboucle
-
+on creer ac - 3 pipes (-3 pour le programme path, le nom du fichier d'entree, le nom du fichier de sortie)
 
 en recursif
-
-int funct(char **av, char **env, int nb, int infile)
-{
-	int pip[2]
-	t_pid pid
-	char **cmd
-
-	if (pipe(pip))
-		return (perror(pipe), -1);
-	cmd = create_cmd(*av, env);
-	pid = fork
-	if (pid == -1)
-		return (tabclear(cmd), -1)
-	if (!pid) //child
-	{
-		close(pip[1])
-		routine_child(infile, pip[0], cmd, env)
-	}
-	dup2(infile, stdin)
-	close(pip[1])
-	if (pid > 0)
-		waitpid(pid)
-	if (nb && *(++av) && pid != -1)
-		return (tabclear(cmd), funct(av, env, nb - 1, pip[0]));
-	if (!nb)
-		return (tabclear(cmd), pid[0])
-	close(pip[0])
-	return (tabclear(cmd), -1)
-}
-
-/*** Routine enfant
-av doit etre construit avant
-*argv = "ls -f"
-cmd = ft_split(av)
-exe = getpath(cmd[0], env
-free(cmd[0])
-cmd[0] = strdup(exe) //cmd = {/bin/ls, -f}
-free(exe) ***/
 
 routine_child(int fdin, int fdout, char **cmd, char **env)
 {
 	dup2(fdin, stdin)
 	dup2(fdout, stdout)
 	excve(cmd[0], cmd, env)
-	perror()
-	exit(FAILURE)
+	exit(perror(FAILURE), errno)
 }
-
-cmd doit etre creer avant le fork (pour pouvoir le free apres)
 
 get_path(char **env, char *cmd)
 {
@@ -104,5 +40,42 @@ get_path(char **env, char *cmd)
 	return (free(temp), fpath);
 }
 
+create_cmd(char *cmd, char **env)
+{
+	cmd = ft_split(av)
+	exe = getpath(cmd[0], env
+	free(cmd[0])
+	cmd[0] = exe 
+}
+
+int funct(char **av, char **env, int nb, int infile)
+{
+	int pip[2]
+	t_pid pid
+	char **cmd
+
+	if (pipe(pip))
+		return (perror(pipe), -1);
+	cmd = create_cmd(*av, env);
+	pid = fork
+	if (pid == -1)
+		return (tabclear(cmd), -1)
+	if (!pid) //child
+	{
+		close(pip[1])
+		routine_child(infile, pip[0], cmd, env)
+	}
+	dup2(infile, stdin)
+	close(pip[1])
+	if (pid > 0)
+		waitpid(pid)
+	if (nb && *(++av))
+		return (tabclear(cmd), funct(av, env, nb - 1, pip[0]));
+	if (!nb)
+		return (tabclear(cmd), pid[0])
+	close(pip[0])
+	return (tabclear(cmd), -1)
+}
 
 
+cmd doit etre creer avant le fork (pour pouvoir le free apres)

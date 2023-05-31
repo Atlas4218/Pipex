@@ -1,0 +1,9 @@
+av = {pipex, heredoc, LIMITER, ls, cat, outfile}
+infile = 0
+
+av++
+av++
+
+while (strnstr(get_next_line, LIMITER))
+{
+	
