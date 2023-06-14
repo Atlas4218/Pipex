@@ -3,11 +3,11 @@ on creer ac - 3 pipes (-3 pour le programme path, le nom du fichier d'entree, le
 
 en recursif
 
-routine_child(int fdin, int fdout, char **cmd, char **env)
+routine_child(int fdin, int fdout, char **av, char **env)
 {
 	dup2(fdin, stdin)
 	dup2(fdout, stdout)
-	excve(cmd[0], cmd, env)
+	excve(av[0], av, env)
 	exit(perror(FAILURE), errno)
 }
 
@@ -29,11 +29,10 @@ get_path(char **env, char *cmd)
 		dpath = ft_strjoin(*listpath, "/")
 		fpath = ft_strjoin(path, cmd)
 		free(dpath)
-		if (!access(path))
+		if (!access(fpath))
 			break ;
 		free(fpath)
-		free(*listpath)
-		listpath++
+		free(*listpath++)
 	}
 	while (*listpath)
 		free(*listpath++)
@@ -42,10 +41,14 @@ get_path(char **env, char *cmd)
 
 create_cmd(char *cmd, char **env)
 {
-	cmd = ft_split(av)
-	exe = getpath(cmd[0], env
-	free(cmd[0])
-	cmd[0] = exe 
+	char **argcmd
+	char *exe
+
+	argcmd = ft_split(cmd)
+	exe = get_path(env, argcmd[0])
+	free(argcmd[0])
+	argcmd[0] = exe
+	return (argcmd)
 }
 
 int funct(char **av, char **env, int nb, int infile)
