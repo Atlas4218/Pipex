@@ -32,6 +32,15 @@ int constr_doc()
 	return(file[1])
 }
 
-while(write(fd, buff, read(pipe, buff, 80)) > 0)
+
+gest_heredoc()
+{
+	si heredoc n'est pqs un fichier
+	{
+		construire le fichier()
+		ouverture du outfile sans le mode trunc
+	}
+
+while(write(fd, buff, read(pipe, buff, 80)) >= 0)
 	donothing
 write(fd, "\0", 1)

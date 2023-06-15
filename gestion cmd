@@ -24,7 +24,7 @@ get_path(char **env, char *cmd)
 		return (NULL);
 	listpath = ft_split((*env) + 5, ':')
 	temp = listpath
-	while (*listpath)
+	while (listpath && *listpath)
 	{
 		dpath = ft_strjoin(*listpath, "/")
 		fpath = ft_strjoin(path, cmd)
@@ -34,51 +34,25 @@ get_path(char **env, char *cmd)
 		free(fpath)
 		free(*listpath++)
 	}
-	while (*listpath)
+	while (listpath && *listpath)
 		free(*listpath++)
 	return (free(temp), fpath);
 }
 
-create_cmd(char *cmd, char **env)
+char **create_cmd(char *cmd, char **env)
 {
 	char **argcmd
 	char *exe
 
 	argcmd = ft_split(cmd)
+	if (!argcmd)
+		return (NULL);
 	exe = get_path(env, argcmd[0])
 	free(argcmd[0])
 	argcmd[0] = exe
 	return (argcmd)
 }
 
-int funct(char **av, char **env, int nb, int infile)
-{
-	int pip[2]
-	t_pid pid
-	char **cmd
-
-	if (pipe(pip))
-		return (perror(pipe), -1);
-	cmd = create_cmd(*av, env);
-	pid = fork
-	if (pid == -1)
-		return (tabclear(cmd), -1)
-	if (!pid) //child
-	{
-		close(pip[1])
-		routine_child(infile, pip[0], cmd, env)
-	}
-	dup2(infile, stdin)
-	close(pip[1])
-	if (pid > 0)
-		waitpid(pid)
-	if (nb && *(++av))
-		return (tabclear(cmd), funct(av, env, nb - 1, pip[0]));
-	if (!nb)
-		return (tabclear(cmd), pid[0])
-	close(pip[0])
-	return (tabclear(cmd), -1)
-}
 
 
 cmd doit etre creer avant le fork (pour pouvoir le free apres)
