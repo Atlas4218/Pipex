@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:10:25 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/13 22:03:11 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/16 22:42:55 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
@@ -31,7 +31,7 @@ int	ft_read_trunc(int fd, char *buff, int size)
 
 char	*get_next_line(int fd)
 {
-	static char	buff[1024][BUFFER_SIZE + 1] = {0};
+	static char	buff[1024][BUFFER_SIZE + 1];
 	char		*temp;
 	char		*result;
 	int		rread[1024] = {BUFFER_SIZE};
@@ -39,8 +39,6 @@ char	*get_next_line(int fd)
 	result = NULL;
 	if (fd <= 2 && fd)
 		return (NULL);
-	if (!buff[fd])
-		buff[fd] = "";
 	result = ft_strljoin(result, buff[fd], strlen(buff[fd]));
 	while (((!strchr(result, '\n') && rread > 0)))
 	{
