@@ -20,5 +20,6 @@
 # endif
 
 char	*get_next_line(int fd);
+char	*ft_strljoin(const char *s1, const char *s2, int size);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/18 15:50:01 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/18 17:42:46 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ char	*get_path(char **env, char *cmd)
 		free(fpath);
 		free(*listpath++);
 	}
+	errno = 0;
 	while (listpath && *listpath)
 		free(*listpath++);
 	return (free(temp), fpath);
@@ -80,9 +81,9 @@ char	**create_cmd(char *cmd, char **env)
 
 void	routine_child(int fdin, int fdout, char **av, char **env)
 {
-	if (dup2(fdin, STDIN_FILENO))
+	if (dup2(fdin, STDIN_FILENO) < 0)
 		perror("error dup2 stdin");
-	if (dup2(fdout, STDOUT_FILENO))
+	if (dup2(fdout, STDOUT_FILENO) < 0)
 		perror("error dup2 stdout");
 	if (!errno)
 	{
@@ -110,14 +111,14 @@ int	funct(char **av, char **env, int nb, int infile)
 		routine_child(infile, pip[1], cmd, env);
 	}
 	dup2(infile, STDIN_FILENO);
-	close(pip[0]);
+	close(pip[1]);
 	if (pid > 0)
 		waitpid(pid, NULL, 0);
 	if (nb && *(++av))
-		return (clear_tab(cmd), funct(av, env, nb - 1, pip[1]));
+		return (clear_tab(cmd), funct(av, env, nb - 1, pip[0]));
 	if (!nb)
-		return (clear_tab(cmd), pip[1]);
-	close(pip[1]);
+		return (clear_tab(cmd), pip[0]);
+	close(pip[0]);
 	return (clear_tab(cmd), -1);
 }
 
@@ -136,7 +137,7 @@ int	main(int ac, char **av, char **env)
 			errno = 22;
 			return (perror(HRDOC_PATTERN), 22);
 		}
-		outfilefd = open(av[ac - 2], O_WRONLY | O_APPEND | O_CREAT);
+		outfilefd = open(av[ac - 2], O_WRONLY | O_APPEND | O_CREAT, 00777);
 		infilefd = constr_doc(*(++av));
 	}
 	else
@@ -156,6 +157,7 @@ int	main(int ac, char **av, char **env)
 	ac = count_arg(++av);
 	returnpipe = funct(av, env, ac - 2, infilefd);
 	close(infilefd);
+	errno = 0;
 	if (returnpipe < 0)
 	{
 		close(outfilefd);
