@@ -6,12 +6,12 @@
 /*   By: rastie <rastie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 18:36:15 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/17 19:46:54 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/18 12:08:38 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
-# define PIPEX_X
+# define PIPEX_H
 # define HRDOC_PATTERN "./pipex here_doc <LIMITER> <cmd1> <cmd2> ... <outfile>"
 # define PIPEX_PATTERN "./pipex <infile> <cmd1> <cmd2> ...  <outfile>"
 # define FAILURE_EXEC "Error while parsing/executing cmd"

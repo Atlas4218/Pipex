@@ -6,11 +6,35 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/17 21:06:38 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/18 15:50:01 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	clear_tab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+		free(tab[i++]);
+	free(tab);
+}
+
+void	void_do_nothing()
+{
+
+}
+int	count_arg(char **av)
+{
+	int	result;
+	
+	result = 0;
+	while (av[result])
+		result++;
+	return (result);
+}
 
 char	*get_path(char **env, char *cmd)
 {
@@ -56,10 +80,15 @@ char	**create_cmd(char *cmd, char **env)
 
 void	routine_child(int fdin, int fdout, char **av, char **env)
 {
-	dup2(fdin, STDIN_FILENO);
-	dup2(fdout, STDOUT_FILENO);
-	execve(av[0], av, env);
-	perror(FAILURE_EXEC);
+	if (dup2(fdin, STDIN_FILENO))
+		perror("error dup2 stdin");
+	if (dup2(fdout, STDOUT_FILENO))
+		perror("error dup2 stdout");
+	if (!errno)
+	{
+		execve(av[0], av, env);
+		perror(FAILURE_EXEC);
+	}
 	exit(errno);
 }
 
@@ -74,22 +103,22 @@ int	funct(char **av, char **env, int nb, int infile)
 	cmd = create_cmd(*av, env);
 	pid = fork();
 	if (pid == -1)
-		return (tabclear(cmd), -1);
+		return (clear_tab(cmd), -1);
 	if (!pid)
 	{
-		close(pip[1]);
-		routine_child(infile, pip[0], cmd, env);
+		close(pip[0]);
+		routine_child(infile, pip[1], cmd, env);
 	}
 	dup2(infile, STDIN_FILENO);
-	close(pip[1]);
+	close(pip[0]);
 	if (pid > 0)
 		waitpid(pid, NULL, 0);
 	if (nb && *(++av))
-		return (tabclear(cmd), funct(av, env, nb - 1, pip[0]));
+		return (clear_tab(cmd), funct(av, env, nb - 1, pip[1]));
 	if (!nb)
-		return (tabclear(cmd), pid[0]);
-	close(pip[0]);
-	return (tabclear(cmd), -1);
+		return (clear_tab(cmd), pip[1]);
+	close(pip[1]);
+	return (clear_tab(cmd), -1);
 }
 
 int	main(int ac, char **av, char **env)
@@ -99,11 +128,7 @@ int	main(int ac, char **av, char **env)
 	int		returnpipe;
 	char	buff[81];
 
-	if (ac < 5)
-	{
-		errno = 22;
-		return (perror(PIPEX_PATTERN), 22);
-	}
+
 	if (!ft_strncmp(*(++av), "here_doc", 9))
 	{
 		if (ac < 6)
@@ -116,6 +141,11 @@ int	main(int ac, char **av, char **env)
 	}
 	else
 	{
+		if (ac < 5)
+		{
+			errno = 22;
+			return (perror(PIPEX_PATTERN), 22);
+		}
 		outfilefd = open(av[ac - 2], O_WRONLY | O_APPEND | O_CREAT | O_TRUNC);
 		infilefd = open(*av, O_RDONLY);
 	}
@@ -123,11 +153,17 @@ int	main(int ac, char **av, char **env)
 		return (perror("outfile error"), errno);
 	if (infilefd < 0)
 		return (perror("infile error"), errno);
-	ac -= 4;
-	returnpipe = funct(++av, env, ac - 1, infilefd);
+	ac = count_arg(++av);
+	returnpipe = funct(av, env, ac - 2, infilefd);
 	close(infilefd);
+	if (returnpipe < 0)
+	{
+		close(outfilefd);
+		return (perror("no last pipe"), -1);
+	}
 	while (write(outfilefd, buff, read(returnpipe, buff, 81)) > 0)
 		void_do_nothing();
+	close(returnpipe);
 	close(outfilefd);
 	return (0);
 }

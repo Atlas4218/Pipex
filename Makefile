@@ -6,11 +6,11 @@
 #    By: rastie <rastie@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/17 19:13:04 by rastie            #+#    #+#              #
-#    Updated: 2023/06/17 19:15:40 by rastie           ###   ########.fr        #
+#    Updated: 2023/06/18 13:54:57 by rastie           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = push_swap
+NAME = pipex 
 
 SRC = src
 INC = inc
@@ -19,7 +19,7 @@ LIB = libft
 
 SOURCE = ${SRC}/main.c\
 	 ${SRC}/get_next_line.c\
-	 ${SRC}/heredoc.c\
+	 ${SRC}/heredoc.c
 
 OBJECT = ${patsubst %,${BIN}/%, ${notdir ${SOURCE:.c=.o}}}
 
@@ -28,22 +28,22 @@ RM = rm -f
 CC = cc
 
 ${BIN}/%.o : ${SRC}/%.c 
-	 mkdir -p ${BIN};\
-	 ${CC} ${CFLAGS} -I${INC} -I${LIB} -c $< -o $@
+	mkdir -p ${BIN};\
+		${CC} ${CFLAGS} -I${INC} -I${LIB} -c $< -o $@
 
 all:	${NAME}
 
 ${NAME}: ${OBJECT}
-	 make -C ${LIB};\
-	 ${CC} -o ${NAME} ${OBJECT} -L${LIB} -lft -I${LIB};
+	make -C ${LIB};\
+		${CC} -o ${NAME} ${OBJECT} -L${LIB} -lft -I${LIB};
 
 clean:
 	${RM} ${OBJECT};\
-	make -C ${LIB} clean;
+		make -C ${LIB} clean;
 
 fclean:	clean
 	make -C ${LIB} fclean;\
-	     ${RM} ${NAME}
+		${RM} ${NAME}
 
 re:	fclean all
 
