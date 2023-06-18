@@ -6,22 +6,73 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/14 16:19:34 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/17 21:06:38 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#define HRDOC_PATTERN "./pipex here_doc <LIMITER> <cmd1> <cmd2> ... <outfile>"
-#define PIPEX_PATTERN "./pipex <infile> <cmd1> <cmd2> ...  <outfile>"
+
+#include "pipex.h"
+
+char	*get_path(char **env, char *cmd)
+{
+	char	**listpath;
+	char	*dpath;
+	char	*fpath;
+	char	**temp;
+
+	while (*env && ft_strncmp(*env, "PATH=", 5))
+		env++;
+	if (!*env)
+		return (NULL);
+	listpath = ft_split((*env) + 5, ':');
+	temp = listpath;
+	while (listpath && *listpath)
+	{
+		dpath = ft_strjoin(*listpath, "/");
+		fpath = ft_strjoin(dpath, cmd);
+		free(dpath);
+		if (!access(fpath, F_OK))
+			break ;
+		free(fpath);
+		free(*listpath++);
+	}
+	while (listpath && *listpath)
+		free(*listpath++);
+	return (free(temp), fpath);
+}
+
+char	**create_cmd(char *cmd, char **env)
+{
+	char **argcmd;
+	char *exe;
+
+	argcmd = ft_split(cmd, ' ');
+	if (!argcmd)
+		return (NULL);
+	exe = get_path(env, argcmd[0]);
+	free(argcmd[0]);
+	argcmd[0] = exe;
+	return (argcmd);
+}
+
+void	routine_child(int fdin, int fdout, char **av, char **env)
+{
+	dup2(fdin, STDIN_FILENO);
+	dup2(fdout, STDOUT_FILENO);
+	execve(av[0], av, env);
+	perror(FAILURE_EXEC);
+	exit(errno);
+}
 
 int	funct(char **av, char **env, int nb, int infile)
 {
 	int		pip[2];
-	t_pid	pid;
+	pid_t	pid;
 	char	**cmd;
 
 	if (pipe(pip))
-		return (perror(pipe), -1);
+		return (perror(PIPE_ERROR), -1);
 	cmd = create_cmd(*av, env);
-	pid = fork;
+	pid = fork();
 	if (pid == -1)
 		return (tabclear(cmd), -1);
 	if (!pid)
@@ -29,10 +80,10 @@ int	funct(char **av, char **env, int nb, int infile)
 		close(pip[1]);
 		routine_child(infile, pip[0], cmd, env);
 	}
-	dup2(infile, stdin);
+	dup2(infile, STDIN_FILENO);
 	close(pip[1]);
 	if (pid > 0)
-		waitpid(pid);
+		waitpid(pid, NULL, 0);
 	if (nb && *(++av))
 		return (tabclear(cmd), funct(av, env, nb - 1, pip[0]));
 	if (!nb)
@@ -41,7 +92,7 @@ int	funct(char **av, char **env, int nb, int infile)
 	return (tabclear(cmd), -1);
 }
 
-int	main(int ac char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	int		infilefd;
 	int		outfilefd;
@@ -61,20 +112,18 @@ int	main(int ac char **av, char **env)
 			return (perror(HRDOC_PATTERN), 22);
 		}
 		outfilefd = open(av[ac - 2], O_WRONLY | O_APPEND | O_CREAT);
-		infilefd = constructfile(*(++av));
+		infilefd = constr_doc(*(++av));
 	}
 	else
 	{
 		outfilefd = open(av[ac - 2], O_WRONLY | O_APPEND | O_CREAT | O_TRUNC);
 		infilefd = open(*av, O_RDONLY);
 	}
-	if (IOfd[1] < 0)
+	if (outfilefd < 0)
 		return (perror("outfile error"), errno);
-	if (IOfd[0] < 0)
+	if (infilefd < 0)
 		return (perror("infile error"), errno);
-	if (get_descriptor(&infilefd, &outfilefd))
-		return (errno);
-	ac = numarg(av);
+	ac -= 4;
 	returnpipe = funct(++av, env, ac - 1, infilefd);
 	close(infilefd);
 	while (write(outfilefd, buff, read(returnpipe, buff, 81)) > 0)
