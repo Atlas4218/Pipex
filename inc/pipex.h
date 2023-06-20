@@ -6,7 +6,7 @@
 /*   By: rastie <rastie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 18:36:15 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/18 17:15:40 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/19 16:27:01 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 
-int	constr_doc(char *limiter);
+int		constr_doc(char *limiter);
+void	clear_tab(char **tab);
+int		count_arg(char **av);
+void	get_fd_heredoc(int *fdin, int ac, char *limiter, char *out_name);
+void	get_fd_pipex(int *fdin, int ac, char *in_name, char *out_name);
+void	cpy_file(int fdin, int fdout);
 
 #endif
