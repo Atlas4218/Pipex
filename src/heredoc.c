@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 10:53:46 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/20 17:06:11 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/23 17:40:11 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -34,7 +34,7 @@ int	constr_doc(char *limiter)
 	write(file[1], "", 1);
 	close(file[1]);
 	file[0] = open(".hrdoc", O_RDONLY);
-	if (file < 0)
+	if (file[0] < 0)
 		return (-1);
 	unlink(".hrdoc");
 	return (file[0]);

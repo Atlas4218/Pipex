@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/20 19:23:32 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/23 18:41:01 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ char	**create_cmd(char *cmd, char **env)
 	char	*exe;
 
 	argcmd = ft_split(cmd, ' ');
-	if (!*argcmd)
+	if (!(*argcmd))
 	{
-		free(argcmd);
+		clear_tab(argcmd);
 		argcmd = malloc(2 * sizeof (*argcmd));
 		argcmd[0] = ft_strdup("cat");
 		argcmd[1] = NULL;
@@ -96,12 +96,12 @@ int	funct(char **av, char **env, int nb, int infile)
 	}
 	close(pip[1]);
 	close(infile);
-	if (nb && *(++av))
-		return (clear_tab(cmd), funct(av, env, nb - 1, pip[0]));
+	if (clear_tab(cmd), nb && *(++av))
+		return (funct(av, env, nb - 1, pip[0]));
 	if (!nb)
-		return (clear_tab(cmd), pip[0]);
+		return (pip[0]);
 	close(pip[0]);
-	return (clear_tab(cmd), -1);
+	return (-1);
 }
 
 int	main(int ac, char **av, char **env)
