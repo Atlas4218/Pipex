@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 14:35:45 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/20 16:34:46 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/24 19:29:19 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -31,40 +31,30 @@ int	count_arg(char **av)
 	return (result);
 }
 
-void	get_fd_heredoc(int *fd_io, int ac, char *limiter, char *out_name)
+int	get_fd_in(int ac, char **av)
 {
-	if (ac < 6)
+	if (!ft_strncmp(*(av), "here_doc", ft_strlen(*av)))
 	{
-		errno = 22;
-		return (perror(HRDOC_PATTERN));
+		if (ac < 6)
+		{
+			errno = 22;
+			return (perror(HRDOC_PATTERN), -1);
+		}
+		return (constr_doc(*(++av)));
 	}
-	fd_io[1] = open(out_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
-	if (fd_io[1] < 0)
-		return (perror(out_name));
-	fd_io[0] = constr_doc(limiter);
-	if (fd_io[0] < 0)
-	{
-		close(fd_io[1]);
-		return (perror("Here_doc error"));
-	}
-}
-
-void	get_fd_pipex(int *fd_io, int ac, char *in_name, char *out_name)
-{
 	if (ac < 5)
 	{
 		errno = 22;
-		return (perror(PIPEX_PATTERN));
+		return (perror(PIPEX_PATTERN), -1);
 	}
-	fd_io[1] = open(out_name, O_WRONLY | O_TRUNC | O_APPEND | O_CREAT, 0664);
-	if (fd_io[1] < 0)
-		return (perror(out_name));
-	fd_io[0] = open(in_name, O_RDONLY);
-	if (fd_io[0] < 0)
-	{
-		close(fd_io[1]);
-		return (perror(in_name));
-	}
+	return (open(*av, O_RDONLY));
+}
+
+int	get_fd_out(int ac, char **av)
+{
+	if (!ft_strncmp(*av, "here_doc", ft_strlen(*av)))
+		return (open(av[ac - 1], O_WRONLY | O_APPEND | O_CREAT, 0644));
+	return (open(av[ac -1], O_WRONLY | O_TRUNC | O_APPEND | O_CREAT, 0644));
 }
 
 void	cpy_file(int fdin, int fdout)
