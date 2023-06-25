@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/24 19:34:45 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/25 20:16:56 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*get_path(char **env, char *cmd)
 	while (*env && ft_strncmp(*env, "PATH=", 5))
 		env++;
 	if (!*env)
-		return (NULL);
+		return (ft_strdup(cmd));
 	listpath = ft_split((*env) + 5, ':');
 	temp = listpath;
 	fpath = NULL;
@@ -110,17 +110,19 @@ int	funct(char **av, char **env, int nb, int infile)
 
 int	main(int ac, char **av, char **env)
 {
-	int		fd_io[2];
+	int	fd_io[2];
+	int	file;
 
 	if (ac < 2)
 		return (22);
-	fd_io[0] = get_fd_in(ac, ++av);
+	file = get_fd_in(ac, ++av);
 	if (errno)
 		return (errno);
 	if (!ft_strncmp(*(av), "here_doc", ft_strlen(*av)))
 		av++;
 	ac = count_arg(++av);
-	dup2(funct(av, env, ac - 2, fd_io[0]), fd_io[0]);
+	fd_io[0] = funct(av, env, ac - 2, file);
+	close(file);
 	if (fd_io[0] < 0)
 		return (perror("no last pipe"), errno);
 	fd_io[1] = get_fd_out(ac, av);
