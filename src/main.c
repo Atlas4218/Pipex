@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/25 20:16:56 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/26 14:19:56 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	main(int ac, char **av, char **env)
 	int	file;
 
 	if (ac < 2)
-		return (22);
+		return (ft_print_error(PIPEX_PATTERN, 22), errno);
 	file = get_fd_in(ac, ++av);
 	if (errno)
 		return (errno);

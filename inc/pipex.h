@@ -6,7 +6,7 @@
 /*   By: rastie <rastie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 18:36:15 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/25 20:17:42 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/26 14:20:35 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,6 @@ int		count_arg(char **av);
 int		get_fd_in(int ac, char **av);
 int		get_fd_out(int ac, char **av);
 void	cpy_file(int fdin, int fdout);
+void	ft_print_error(char *msg, int return_value);
 
 #endif

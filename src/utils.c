@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 14:35:45 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/24 19:29:19 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/26 14:20:04 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -36,17 +36,11 @@ int	get_fd_in(int ac, char **av)
 	if (!ft_strncmp(*(av), "here_doc", ft_strlen(*av)))
 	{
 		if (ac < 6)
-		{
-			errno = 22;
-			return (perror(HRDOC_PATTERN), -1);
-		}
+			return (ft_print_error(HRDOC_PATTERN, 22), -1);
 		return (constr_doc(*(++av)));
 	}
 	if (ac < 5)
-	{
-		errno = 22;
-		return (perror(PIPEX_PATTERN), -1);
-	}
+		return (ft_print_error(PIPEX_PATTERN, 22), -1);
 	return (open(*av, O_RDONLY));
 }
 

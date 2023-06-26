@@ -6,7 +6,7 @@
 #    By: rastie <rastie@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/17 19:13:04 by rastie            #+#    #+#              #
-#    Updated: 2023/06/19 15:26:52 by rastie           ###   ########.fr        #
+#    Updated: 2023/06/26 14:20:38 by rastie           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ LIB = libft
 SOURCE = ${SRC}/main.c\
 	 ${SRC}/heredoc.c\
 	 ${SRC}/utils.c\
+	 ${SRC}/utils_2.c\
 	 ${SRC}/get_next_line.c\
 	 ${SRC}/get_next_line_utils.c
 
