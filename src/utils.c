@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 14:35:45 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/26 14:20:04 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/28 17:05:16 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -33,7 +33,7 @@ int	count_arg(char **av)
 
 int	get_fd_in(int ac, char **av)
 {
-	if (!ft_strncmp(*(av), "here_doc", ft_strlen(*av)))
+	if (!ft_strncmp(*(av), "here_doc", ft_strlen(*av)) && **av)
 	{
 		if (ac < 6)
 			return (ft_print_error(HRDOC_PATTERN, 22), -1);
@@ -46,9 +46,11 @@ int	get_fd_in(int ac, char **av)
 
 int	get_fd_out(int ac, char **av)
 {
+	if (!*av[ac + 1])
+		return (ft_print_error("Empty outfile name", 22), -1);
 	if (!ft_strncmp(*av, "here_doc", ft_strlen(*av)))
-		return (open(av[ac - 1], O_WRONLY | O_APPEND | O_CREAT, 0644));
-	return (open(av[ac -1], O_WRONLY | O_TRUNC | O_APPEND | O_CREAT, 0644));
+		return (open(av[ac + 1], O_WRONLY | O_APPEND | O_CREAT, 0644));
+	return (open(av[ac + 1], O_WRONLY | O_TRUNC | O_APPEND | O_CREAT, 0644));
 }
 
 void	cpy_file(int fdin, int fdout)
@@ -57,7 +59,7 @@ void	cpy_file(int fdin, int fdout)
 	char	buff[81];
 
 	rread = 1;
-	while (rread)
+	while (rread > 0)
 	{
 		rread = read(fdin, buff, 81);
 		write(fdout, buff, rread);

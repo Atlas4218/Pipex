@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 10:53:46 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/24 16:38:16 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/28 16:30:29 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -21,7 +21,7 @@ int	constr_doc(char *limiter)
 		return (-1);
 	ft_printf("pipex heredoc>");
 	gnlresult = get_next_line(0);
-	while (gnlresult && (!(ft_strlen(gnlresult) - 1)
+	while (gnlresult && ((!(ft_strlen(gnlresult) - 1) && *limiter)
 			|| ft_strncmp(gnlresult, limiter, ft_strlen(gnlresult) - 1)))
 	{
 		write(file[1], gnlresult, ft_strlen(gnlresult));
@@ -29,7 +29,7 @@ int	constr_doc(char *limiter)
 		ft_printf("pipex heredoc>");
 		gnlresult = get_next_line(0);
 	}
-	if (*gnlresult)
+	if (gnlresult && *gnlresult)
 		free(gnlresult);
 	write(file[1], "", 1);
 	close(file[1]);

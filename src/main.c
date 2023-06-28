@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 16:42:49 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/26 14:19:56 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/28 17:06:26 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	routine_child(int fdin, int fdout, char **av, char **env)
 	close(fdout);
 	if (!errno)
 		execve(av[0], av, env);
-	perror(FAILURE_EXEC);
+	perror(*av);
 	clear_tab(av);
 	exit(errno);
 }
@@ -117,19 +117,18 @@ int	main(int ac, char **av, char **env)
 		return (ft_print_error(PIPEX_PATTERN, 22), errno);
 	file = get_fd_in(ac, ++av);
 	if (errno)
-		return (errno);
+		return (perror(*av), errno);
 	if (!ft_strncmp(*(av), "here_doc", ft_strlen(*av)))
 		av++;
 	ac = count_arg(++av);
 	fd_io[0] = funct(av, env, ac - 2, file);
-	close(file);
 	if (fd_io[0] < 0)
 		return (perror("no last pipe"), errno);
-	fd_io[1] = get_fd_out(ac, av);
+	fd_io[1] = get_fd_out(ac, av - 2);
 	if (fd_io[1] < 0)
 	{
 		close(fd_io[0]);
-		return (perror("outfile"), errno);
+		return (errno);
 	}
 	cpy_file(fd_io[0], fd_io[1]);
 	close(fd_io[0]);
