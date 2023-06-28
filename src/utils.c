@@ -6,7 +6,7 @@
 /*   By: rastie <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/19 14:35:45 by rastie            #+#    #+#             */
-/*   Updated: 2023/06/28 17:05:16 by rastie           ###   ########.fr       */
+/*   Updated: 2023/06/28 19:14:09 by rastie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -47,7 +47,7 @@ int	get_fd_in(int ac, char **av)
 int	get_fd_out(int ac, char **av)
 {
 	if (!*av[ac + 1])
-		return (ft_print_error("Empty outfile name", 22), -1);
+		return (ft_print_error(av[ac + 1], 2), -1);
 	if (!ft_strncmp(*av, "here_doc", ft_strlen(*av)))
 		return (open(av[ac + 1], O_WRONLY | O_APPEND | O_CREAT, 0644));
 	return (open(av[ac + 1], O_WRONLY | O_TRUNC | O_APPEND | O_CREAT, 0644));
